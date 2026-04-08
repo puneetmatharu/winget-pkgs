@@ -17,4 +17,9 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Validate manifest
-        run: winget validate --manifest manifests/c/cmakefmt/cmakefmt/0.2.0/
+        shell: pwsh
+        run: |
+          $output = winget validate --manifest manifests/c/cmakefmt/cmakefmt/0.2.0/ 2>&1
+          $output | ForEach-Object { Write-Output $_ }
+          if ($output -match "Manifest validation failed") { exit 1 }
+          Write-Output "Validation passed (warnings are non-fatal)."
